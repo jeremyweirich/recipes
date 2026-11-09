@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -24,6 +24,18 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Generate pictures for recipes without a photo
+        run: node scripts/generate-photos.mjs
+      - name: Save new pictures to the repo
+        run: |
+          [ -d recipes/photos/generated ] || exit 0
+          git add recipes/photos/generated
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Add generated recipe pictures"
+          git pull --rebase origin main
+          git push origin HEAD:main
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:

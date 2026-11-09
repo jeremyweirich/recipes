@@ -17,6 +17,11 @@ const browser = await chromium.launch({ executablePath: process.env.CHROME ?? "/
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true });
 await ctx.route(/fonts\.(googleapis|gstatic)\.com/, (route) => route.abort());
 await ctx.addInitScript({ content: readFileSync(new URL("./fake-supabase.js", import.meta.url), "utf8") });
+// Pin the test to the two pork stews so adding recipes doesn't change what it expects.
+const built = JSON.parse(readFileSync(new URL("../dist/recipes.json", import.meta.url), "utf8"));
+const fixture = { ...built, recipes: built.recipes.filter((r) => r.slug.includes("pork-stew")) };
+assert.equal(fixture.recipes.length, 2, "test fixture needs both pork stew recipes");
+await ctx.route(/recipes\.json$/, (route) => route.fulfill({ contentType: "application/json", body: JSON.stringify(fixture) }));
 const page = await ctx.newPage();
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));

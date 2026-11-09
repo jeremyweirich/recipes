@@ -224,6 +224,7 @@ function openRecipe(r) {
   const picked = pickedSlugs().has(r.slug);
   $("recipe-content").innerHTML = `
     ${r.photo ? `<img class="recipe-photo" src="${esc(r.photo)}" alt="">` : ""}
+    ${r.photo_generated ? `<p class="photo-note">AI-generated picture. Add your own photo to replace it.</p>` : ""}
     <h2 id="recipe-title" class="recipe-title">${esc(r.title)}</h2>
     <p class="recipe-facts">Serves ${esc(r.servings)}${time ? `, ${esc(time)}` : ""}</p>
     <h3>Ingredients</h3>

@@ -23,6 +23,9 @@ for (const [item, sec] of Object.entries(sections.items)) {
   if (item !== item.toLowerCase()) errors.push(`sections.json: "${item}" should be lowercase`);
 }
 
+// Placeholder pictures made by scripts/generate-photos.mjs; a real `photo:` always wins.
+const generated = (slug) => (existsSync(join(recipesDir, "photos/generated", `${slug}.jpg`)) ? `recipes/photos/generated/${slug}.jpg` : null);
+
 const files = readdirSync(recipesDir).filter((f) => f.endsWith(".md")).sort();
 const slugs = new Set(files.map((f) => basename(f, ".md")));
 const recipes = [];
@@ -76,7 +79,8 @@ for (const file of files) {
     servings: meta.servings,
     time_minutes: meta.time_minutes ?? null,
     tags: meta.tags ?? [],
-    photo: meta.photo ? `recipes/${meta.photo}` : null,
+    photo: meta.photo ? `recipes/${meta.photo}` : generated(slug),
+    photo_generated: !meta.photo && generated(slug) !== null,
     related: meta.related ?? [],
     ingredients,
     body: m[2].trim(),

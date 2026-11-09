@@ -64,3 +64,10 @@ A phone web app in `app/`, deployed to GitHub Pages on every push to `main`. Add
 - `npm test`: validates recipes and runs unit tests.
 - `npm run serve`: builds into `dist/` and serves it at http://localhost:8000.
 - `npm run build && node test/e2e.mjs`: full run in headless Chrome against a fake Supabase (`test/fake-supabase.js`); screenshots go to `test/shots/`. Needs Playwright.
+
+## Recipe pictures
+
+Recipes without a `photo:` get an AI-generated placeholder from [Pollinations.ai](https://pollinations.ai) (free, no account). The deploy workflow makes one per recipe, saves it to `recipes/photos/generated/<recipe>.jpg`, and commits it, so each picture is made once.
+
+- To use a real photo, add it to `recipes/photos/` and set `photo:` in the recipe. It replaces the generated one.
+- To get a different generated picture, delete that recipe's file in `recipes/photos/generated/` and push.

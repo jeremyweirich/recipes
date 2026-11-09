@@ -209,7 +209,7 @@ main { max-width: 560px; margin: 0 auto; padding: 4px 16px calc(var(--tabs-h) + 
 .sheet[open] { animation: rise 220ms ease-out; }
 @keyframes rise { from { transform: translateY(40px); opacity: 0; } }
 .sheet-body { position: relative; max-height: inherit; overflow-y: auto; padding: 22px 20px calc(24px + env(safe-area-inset-bottom)); }
-.sheet .close { position: absolute; top: 8px; right: 8px; }
+.sheet .close { position: absolute; top: 8px; right: 8px; z-index: 1; background: rgb(255 255 255 / 0.92); }
 .sheet h2 { margin: 0 44px 8px 0; font: 700 28px/1.15 var(--hand); }
 .sheet label { display: block; margin: 14px 0 6px; font-size: 14px; font-weight: 700; color: var(--ink-soft); }
 .sheet select { width: 100%; height: 48px; padding: 0 12px; border: 2px solid var(--counter-deep); border-radius: 10px; background: var(--paper); }
@@ -218,6 +218,7 @@ main { max-width: 560px; margin: 0 auto; padding: 4px 16px calc(var(--tabs-h) + 
 .item-detail { margin: 0; color: var(--ink-soft); }
 
 .recipe-photo { width: calc(100% + 40px); margin: -22px -20px 16px; aspect-ratio: 16 / 10; object-fit: cover; }
+.photo-note { margin: -8px 0 12px; font-size: 13px; color: var(--ink-soft); }
 .recipe-title { padding-bottom: 6px; border-bottom: 2px solid var(--margin); }
 .recipe-facts { margin: 0 0 8px; color: var(--ink-soft); }
 #recipe-content h3 { margin: 20px 0 6px; font-size: 17px; }
