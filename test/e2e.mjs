@@ -41,6 +41,8 @@ try {
   await page.fill("#auth-password", "pw");
   await page.click("#auth-form button");
   await page.waitForSelector("#app:not([hidden]) .card.top");
+  const photoWidth = await page.$eval(".card.top .card-photo", (el) => el.getBoundingClientRect().width);
+  assert.ok(photoWidth > 300, `top card picture should span the card (was ${photoWidth}px)`);
   await page.screenshot({ path: `${shots}1-plan.png` });
 
   step("swipe right on the top card adds it to the week");

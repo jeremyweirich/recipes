@@ -35,7 +35,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .wordmark { font: 700 26px/1 var(--hand); letter-spacing: 0.01em; }
 
 /* ---------- shell ---------- */
-.top {
+.app-header {
   position: sticky; top: 0; z-index: 5;
   display: flex; align-items: center; gap: 12px;
   padding: calc(env(safe-area-inset-top) + 10px) 16px 10px;
