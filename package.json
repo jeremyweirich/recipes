@@ -1,0 +1,12 @@
+{
+  "name": "recipes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/build-recipes.mjs --check",
+    "build:recipes": "node scripts/build-recipes.mjs"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}

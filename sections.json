@@ -1,0 +1,52 @@
+{
+  "sections": [
+    { "id": "produce", "name": "Produce" },
+    { "id": "meat", "name": "Meat & Seafood" },
+    { "id": "deli", "name": "Deli & Prepared" },
+    { "id": "bakery", "name": "Bakery" },
+    { "id": "dairy", "name": "Dairy & Eggs" },
+    { "id": "canned", "name": "Canned & Jarred" },
+    { "id": "grains", "name": "Pasta, Rice & Grains" },
+    { "id": "baking", "name": "Baking" },
+    { "id": "spices", "name": "Spices & Seasonings" },
+    { "id": "condiments", "name": "Condiments & Sauces" },
+    { "id": "oils", "name": "Oils & Vinegars" },
+    { "id": "international", "name": "International" },
+    { "id": "snacks", "name": "Snacks" },
+    { "id": "frozen", "name": "Frozen" },
+    { "id": "beverages", "name": "Beverages" },
+    { "id": "alcohol", "name": "Beer & Wine" },
+    { "id": "household", "name": "Household" },
+    { "id": "other", "name": "Other" }
+  ],
+  "items": {
+    "avocado oil": "oils",
+    "bay leaves": "spices",
+    "beef broth": "canned",
+    "black pepper": "spices",
+    "celery": "produce",
+    "cremini mushrooms": "produce",
+    "dried thyme": "spices",
+    "dry red wine": "alcohol",
+    "garlic": "produce",
+    "kosher salt": "spices",
+    "parsley": "produce",
+    "pork shoulder": "meat",
+    "smoked paprika": "spices",
+    "tomato paste": "canned",
+    "turnips": "produce",
+    "worcestershire sauce": "condiments",
+    "xanthan gum": "baking",
+    "yellow onion": "produce"
+  },
+  "staples": [
+    "avocado oil",
+    "bay leaves",
+    "black pepper",
+    "dried thyme",
+    "kosher salt",
+    "smoked paprika",
+    "worcestershire sauce",
+    "xanthan gum"
+  ]
+}
