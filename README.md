@@ -52,7 +52,7 @@ A phone web app in `app/`, deployed to GitHub Pages on every push to `main`. Add
 
 ### One-time setup
 
-1. **Database:** `supabase/migrations/` creates the tables. With the Supabase GitHub integration set to deploy to production, it runs on push. Otherwise paste the file into the Supabase SQL editor and run it.
+1. **Database:** already set up (applied 2026-11-09 through the Supabase connector). Future schema changes go in a new file in `supabase/migrations/` and get applied the same way; the file names match the versions Supabase records.
 2. **Household members:** in the SQL editor, run
    `insert into public.members (email) values ('you@example.com'), ('spouse@example.com');`
    Keep these emails out of the repo.
