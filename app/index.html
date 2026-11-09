@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Recipe Box</title>
+  <meta name="theme-color" content="#DCE3D3">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Recipe Box">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=Kalam:wght@400;700&display=swap">
+  <link rel="stylesheet" href="app.css">
+  <script src="vendor/supabase.js" defer></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <div id="app" hidden>
+    <header class="top">
+      <span class="wordmark">Recipe Box</span>
+      <span class="sync" id="sync" role="status" aria-live="polite"></span>
+      <button class="icon-btn" id="menu-btn" aria-label="Menu" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+      </button>
+    </header>
+
+    <main>
+      <section id="plan-view" class="view" aria-labelledby="tab-plan">
+        <div class="deck" id="deck" aria-live="polite"></div>
+        <div class="deck-actions" id="deck-actions">
+          <button class="round skip" id="skip-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            <span>Skip</span>
+          </button>
+          <button class="round pick" id="pick-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+            <span>Add to week</span>
+          </button>
+        </div>
+        <section class="week">
+          <h2>This week</h2>
+          <ul id="week-list" class="week-list"></ul>
+          <p class="week-empty" id="week-empty">Nothing picked yet. Swipe right on a recipe to add it.</p>
+        </section>
+      </section>
+
+      <section id="list-view" class="view" aria-labelledby="tab-list" hidden>
+        <form id="add-form" class="add-form" autocomplete="off">
+          <label class="visually-hidden" for="add-input">Add an item</label>
+          <input id="add-input" name="item" placeholder="Add an item" enterkeyhint="done">
+          <button type="submit">Add</button>
+        </form>
+        <div id="list" class="list"></div>
+        <div class="list-footer">
+          <button class="text-btn" id="clear-checked" hidden>Clear checked items</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabs" role="tablist">
+      <button role="tab" id="tab-plan" aria-selected="true" aria-controls="plan-view" data-view="plan">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="14" height="13" rx="1.5"/><path d="M7 3h13v13"/></svg>
+        Plan
+      </button>
+      <button role="tab" id="tab-list" aria-selected="false" aria-controls="list-view" data-view="list">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>
+        List <span class="badge" id="list-count" hidden></span>
+      </button>
+    </nav>
+  </div>
+
+  <section id="auth-view" class="auth" hidden>
+    <div class="auth-card">
+      <h1 class="wordmark">Recipe Box</h1>
+      <p>Sign in to plan the week and share the grocery list.</p>
+      <form id="auth-form">
+        <label for="auth-email">Email</label>
+        <input id="auth-email" type="email" autocomplete="username" required>
+        <label for="auth-password">Password</label>
+        <input id="auth-password" type="password" autocomplete="current-password" required>
+        <p class="error" id="auth-error" role="alert"></p>
+        <button type="submit" class="primary">Sign in</button>
+      </form>
+    </div>
+  </section>
+
+  <dialog id="recipe-sheet" class="sheet" aria-labelledby="recipe-title">
+    <div class="sheet-body">
+      <button class="icon-btn close" data-close aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div id="recipe-content"></div>
+    </div>
+  </dialog>
+
+  <dialog id="item-sheet" class="sheet small" aria-labelledby="item-title">
+    <div class="sheet-body">
+      <button class="icon-btn close" data-close aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <h2 id="item-title"></h2>
+      <p class="item-detail" id="item-detail"></p>
+      <label for="item-section">Store section</label>
+      <select id="item-section"></select>
+      <div class="sheet-actions">
+        <button class="primary" id="item-need" hidden>Add to shopping list</button>
+        <button class="danger" id="item-remove">Remove from list</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="menu-sheet" class="sheet small" aria-label="Menu">
+    <div class="sheet-body">
+      <button class="icon-btn close" data-close aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <h2>Start a new week</h2>
+      <p>Clears this week's recipes and their ingredients, plus anything checked off. Items you added by hand stay unless they're checked.</p>
+      <div class="sheet-actions">
+        <button class="primary" id="new-week">Start a new week</button>
+      </div>
+      <p class="signed-in" id="signed-in"></p>
+      <button class="text-btn" id="sign-out">Sign out</button>
+    </div>
+  </dialog>
+</body>
+</html>

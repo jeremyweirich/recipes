@@ -4,9 +4,13 @@
   "type": "module",
   "scripts": {
     "check": "node scripts/build-recipes.mjs --check",
-    "build:recipes": "node scripts/build-recipes.mjs"
+    "test": "node scripts/build-recipes.mjs --check && node --test test/*.test.mjs",
+    "build:recipes": "node scripts/build-recipes.mjs",
+    "build": "node scripts/build-site.mjs",
+    "serve": "npm run build && python3 -m http.server 8000 -d dist"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
     "js-yaml": "^4.1.0"
   }
 }

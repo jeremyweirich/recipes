@@ -41,3 +41,26 @@ Free-form intro, then `## Method` and `## Notes` in markdown.
 - `sections`: store sections, **in the order you walk the store**. Reorder them to match your store.
 - `items`: ingredient name → section id. This seeds the app. Changes you make in the app will be saved there too.
 - `staples`: pantry items you usually have. The app puts these in a "check you have these" group instead of adding them to the list automatically.
+
+## The app
+
+A phone web app in `app/`, deployed to GitHub Pages on every push to `main`. Add it to your home screen from Safari (Share → Add to Home Screen) or Chrome (menu → Add to Home screen).
+
+- **Plan:** swipe right to add a recipe to this week, left to skip. Tap a card to read the recipe.
+- **List:** everything from this week's recipes, merged and grouped by store section, plus anything you add by hand. Changes show up on both phones right away. If you lose signal in the store, changes are saved on the phone and sent when you're back online.
+- **Menu → Start a new week:** clears this week's recipes and their ingredients, plus checked-off items.
+
+### One-time setup
+
+1. **Database:** `supabase/migrations/` creates the tables. With the Supabase GitHub integration set to deploy to production, it runs on push. Otherwise paste the file into the Supabase SQL editor and run it.
+2. **Household members:** in the SQL editor, run
+   `insert into public.members (email) values ('you@example.com'), ('spouse@example.com');`
+   Keep these emails out of the repo.
+3. **Accounts:** Supabase → Authentication → Users → Add user → Create new user, with "Auto confirm" on, for each of you. Then turn off "Allow new users to sign up" under Authentication → Sign In / Providers.
+4. **Hosting:** GitHub → Settings → Pages → Source: **GitHub Actions**.
+
+### Developing
+
+- `npm test`: validates recipes and runs unit tests.
+- `npm run serve`: builds into `dist/` and serves it at http://localhost:8000.
+- `npm run build && node test/e2e.mjs`: full run in headless Chrome against a fake Supabase (`test/fake-supabase.js`); screenshots go to `test/shots/`. Needs Playwright.
