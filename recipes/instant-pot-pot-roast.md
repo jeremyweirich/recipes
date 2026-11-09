@@ -5,6 +5,7 @@ servings: 6
 time_minutes: 105
 tags: [keto, beef, instant-pot, fall, comfort]
 photo:
+photo_prompt: "A tender beef chuck pot roast pulled into large chunks on a platter, surrounded by halved cooked radishes, celery and onion wedges, with brown gravy"
 ingredients:
   - { item: chuck roast, qty: 3, unit: lb }
   - { item: avocado oil, qty: 1, unit: tbsp }

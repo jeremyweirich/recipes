@@ -5,6 +5,7 @@ servings: 6
 time_minutes: 40
 tags: [keto, chicken, instant-pot, mexican, weeknight]
 photo:
+photo_prompt: "A bowl of shredded chicken in bright green tomatillo salsa verde, topped with chopped cilantro, a lime wedge and a spoonful of sour cream"
 ingredients:
   - { item: chicken thighs, qty: 2, unit: lb, note: boneless skinless }
   - { item: salsa verde, qty: 1, unit: jar, note: 16 oz }

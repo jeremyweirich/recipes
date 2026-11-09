@@ -5,6 +5,7 @@ servings: 6
 time_minutes: 40
 tags: [keto, beef, soup, instant-pot, fall, weeknight]
 photo:
+photo_prompt: "A bowl of tomato-red soup with chunks of tender green cabbage and browned ground beef, with a dollop of sour cream"
 ingredients:
   - { item: ground beef, qty: 1, unit: lb }
   - { item: yellow onion, qty: 1, unit: whole, note: diced }

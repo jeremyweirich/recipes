@@ -5,6 +5,7 @@ servings: 8
 time_minutes: 75
 tags: [keto, pork, instant-pot, air-fryer, mexican, make-ahead]
 photo:
+photo_prompt: "A pile of crispy, golden-edged shredded pork carnitas on a wooden board with lime wedges, chopped cilantro and small tortillas"
 ingredients:
   - { item: pork shoulder, qty: 3, unit: lb, note: "boneless, 2-inch chunks" }
   - { item: kosher salt, qty: 2, unit: tsp }

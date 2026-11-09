@@ -19,6 +19,7 @@ servings: 6                            # required, whole number
 time_minutes: 180
 tags: [keto, pork, stew, oven]
 photo: photos/keto-braised-pork-stew.jpg
+photo_prompt: "A bowl of dark, glossy pork stew with turnips and mushrooms"  # steers the generated picture
 related: [instant-pot-keto-pork-stew]  # other recipe file names, no .md
 ingredients:
   - { item: yellow onion, qty: 1, unit: whole, note: "medium, diced" }
@@ -71,4 +72,5 @@ A phone web app in `app/`, deployed to GitHub Pages on every push to `main`. Add
 Recipes without a `photo:` get an AI-generated placeholder from [Pollinations.ai](https://pollinations.ai) (free, no account). The deploy workflow makes one per recipe, saves it to `recipes/photos/generated/<recipe>.jpg`, and commits it, so each picture is made once.
 
 - To use a real photo, add it to `recipes/photos/` and set `photo:` in the recipe. It replaces the generated one.
-- To get a different generated picture, delete that recipe's file in `recipes/photos/generated/` and push.
+- To steer a picture, add `photo_prompt:` to the recipe describing what the finished dish looks like ("a bowl of creamy coconut chicken soup with red peppers and cilantro"). Adding or changing it makes a new picture on the next push.
+- To get a different picture without changing anything, delete that recipe's file in `recipes/photos/generated/` and push.

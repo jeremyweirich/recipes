@@ -5,6 +5,7 @@ servings: 6
 time_minutes: 35
 tags: [keto, pork, soup, instant-pot, italian, fall]
 photo:
+photo_prompt: "A bowl of creamy Italian soup with crumbled browned sausage, dark green kale ribbons and cauliflower florets in a pale, creamy broth"
 ingredients:
   - { item: italian sausage, qty: 1, unit: lb, note: bulk or casings removed }
   - { item: yellow onion, qty: 1, unit: whole, note: diced }

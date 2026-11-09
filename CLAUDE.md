@@ -17,6 +17,7 @@ Shared meal-planning + grocery web app for Jeremy (Android) and his wife (iPhone
 - One ingredient name per thing you'd buy: use `mushrooms` (variety in `note`), not separate names per variety, so the list merges.
 
 ## Conventions
+- New recipes get a `photo_prompt:` describing the finished dish as it looks on the plate (colors, texture, garnish), not its ingredient list. Ingredient-list prompts gave bean/corn soups for chili verde and carrots for carnitas.
 - Run `npm run check` after editing recipes or sections.json.
 - Keep ingredient `item` names consistent across recipes; add new ones to sections.json.
 - Keep MVP small: swipe, shared list by section, manual add, check-off and remove. Later: servings scaling, "both swiped yes" mode, photo upload.
@@ -25,6 +26,7 @@ Shared meal-planning + grocery web app for Jeremy (Android) and his wife (iPhone
 - `app/index.html`, `app/app.css`: one page, two tabs (Plan, List), `<dialog>` sheets.
 - `app/js/store.js`: Supabase data + localStorage outbox (optimistic; ops replayed on fresh server state; 4xx ops dropped). Realtime triggers a full refetch.
 - `app/js/combine.js`: pure merging/formatting/section-guessing; `app/js/units.js`: US unit conversion (both unit tested in `test/combine.test.mjs`).
+- `scripts/generate-photos.mjs`: Pollinations placeholders, run in the deploy workflow; regenerates when a recipe's `photo_prompt` changes (tracked in `recipes/photos/generated/prompts.json`).
 - `app/sw.js`: shell cached per build (`__BUILD__` stamped by `scripts/build-site.mjs`); Supabase never cached.
 - `supabase/migrations/`: schema. Access = signed in AND email in `public.members` (`is_member()`). New tables need explicit grants + RLS.
 - After UI changes: `npm run build && PLAYWRIGHT=<path> node test/e2e.mjs` and look at `test/shots/`.
