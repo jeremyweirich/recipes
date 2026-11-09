@@ -11,7 +11,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const recipesDir = join(root, "recipes");
 const outDir = join(recipesDir, "photos/generated");
 const BASE = process.env.IMAGE_BASE ?? "https://image.pollinations.ai/prompt/";
-const DELAY_MS = Number(process.env.DELAY_MS ?? 16000); // anonymous tier: about 1 request per 15 s
+const DELAY_MS = Number(process.env.DELAY_MS ?? 30000); // anonymous tier turns away bursts (HTTP 402/429)
 const sections = JSON.parse(readFileSync(join(root, "sections.json"), "utf8"));
 const staples = new Set(sections.staples);
 
@@ -54,11 +54,11 @@ for (const [n, { slug, meta }] of todo.entries()) {
   if (n > 0) await sleep(DELAY_MS);
   const url = `${BASE}${encodeURIComponent(promptFor(meta))}?width=1200&height=800&seed=${seedFor(slug)}&model=flux&nologo=true`;
   let saved = false;
-  for (let attempt = 1; attempt <= 3 && !saved; attempt++) {
+  for (let attempt = 1; attempt <= 4 && !saved; attempt++) {
     try {
       const res = await fetch(url, { signal: AbortSignal.timeout(120_000) });
       const type = res.headers.get("content-type") ?? "";
-      if (res.status === 429) { console.warn(`${slug}: rate limited, waiting`); await sleep(DELAY_MS * 2); continue; }
+      if (res.status === 429 || res.status === 402) { console.warn(`${slug}: busy (HTTP ${res.status}), waiting`); await sleep(DELAY_MS); continue; }
       if (!res.ok || !type.startsWith("image/")) throw new Error(`HTTP ${res.status} ${type}`);
       const buf = Buffer.from(await res.arrayBuffer());
       if (buf.length < 10_000) throw new Error(`image too small (${buf.length} bytes)`);
@@ -68,7 +68,7 @@ for (const [n, { slug, meta }] of todo.entries()) {
       made++;
     } catch (e) {
       console.warn(`${slug}: attempt ${attempt} failed: ${e.message}`);
-      if (attempt < 3) await sleep(DELAY_MS);
+      if (attempt < 4) await sleep(DELAY_MS);
     }
   }
 }
