@@ -28,4 +28,5 @@ Serve with crusty bread or white rice for non-keto guests.
 4. Squeeze in the lime right before serving.
 
 ## Notes
+- Mixing mushroom varieties is fun here: cremini, shiitake and oyster all work.
 - Keto: the carrots add only about 3 g net carbs per serving across 4 bowls, so they can stay. To cut them, use zucchini or daikon instead.

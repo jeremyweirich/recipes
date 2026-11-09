@@ -4,6 +4,7 @@ import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync } from 
 import { join, basename, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
+import { toUS } from "../app/js/units.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const recipesDir = join(root, "recipes");
@@ -61,10 +62,12 @@ for (const file of files) {
     const section = ing.section ?? sections.items[item];
     if (!section) errors.push(`${at}: "${item}" has no store section; add it to sections.json`);
     else if (!sectionIds.has(section)) errors.push(`${at} (${item}): unknown section "${section}"`);
+    // US units only: any metric amount is converted quietly (see app/js/units.js).
+    const us = toUS(ing.qty ?? null, ing.unit ?? null);
     return {
       item,
-      qty: ing.qty ?? null,
-      unit: ing.unit ?? null,
+      qty: us.qty ?? null,
+      unit: us.unit ?? null,
       note: ing.note ?? null,
       optional: ing.optional === true,
       section: section ?? "other",

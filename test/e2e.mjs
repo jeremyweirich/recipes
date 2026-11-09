@@ -71,7 +71,7 @@ try {
   await page.click("#tab-list");
   const headings = await page.$$eval(".aisle h2", (hs) => hs.map((h) => h.textContent));
   assert.deepEqual(headings, ["Produce", "Meat & Seafood", "Canned & Jarred", "Beer & Wine", "Check you have these"]);
-  assert.equal(await page.textContent('.item[data-key="n|pork shoulder"] .item-qty'), "1.4 kg");
+  assert.equal(await page.textContent('.item[data-key="n|pork shoulder"] .item-qty'), "3 lb");
   assert.equal(await page.textContent("#list-count"), "10");
   await page.screenshot({ path: `${shots}5-list.png`, fullPage: true });
 

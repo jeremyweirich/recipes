@@ -7,22 +7,22 @@ tags: [keto, pork, stew, instant-pot, weeknight]
 photo:
 related: [keto-braised-pork-stew]
 ingredients:
-  - { item: pork shoulder, qty: 1.4, unit: kg, note: "boneless; fat cap and thick seams trimmed; 4 cm chunks" }
+  - { item: pork shoulder, qty: 3, unit: lb, note: "boneless; fat cap and thick seams trimmed; 1½-inch chunks" }
   - { item: avocado oil, qty: 2, unit: tbsp, note: or olive oil }
   - { item: kosher salt, qty: 2, unit: tsp }
   - { item: black pepper, qty: 1, unit: tsp }
   - { item: yellow onion, qty: 1, unit: whole, note: "medium, diced" }
   - { item: garlic, qty: 5, unit: clove, note: minced }
   - { item: tomato paste, qty: 2, unit: tbsp }
-  - { item: dry red wine, qty: 120, unit: ml, note: "or 120 ml extra broth + 1 tbsp red wine vinegar" }
-  - { item: beef broth, qty: 400, unit: ml, note: unsweetened }
+  - { item: dry red wine, qty: 0.5, unit: cup, note: "or ½ cup extra broth + 1 tbsp red wine vinegar" }
+  - { item: beef broth, qty: 1.75, unit: cup, note: unsweetened }
   - { item: worcestershire sauce, qty: 1, unit: tbsp }
   - { item: smoked paprika, qty: 1, unit: tsp }
   - { item: dried thyme, qty: 1, unit: tsp }
   - { item: bay leaves, qty: 2, unit: whole }
   - { item: celery, qty: 3, unit: stalk, note: sliced }
-  - { item: turnips, qty: 300, unit: g, note: "peeled, 3 cm cubes" }
-  - { item: cremini mushrooms, qty: 450, unit: g, note: halved }
+  - { item: turnips, qty: 2, unit: whole, note: "medium (about ⅔ lb), peeled, 1¼-inch cubes" }
+  - { item: mushrooms, qty: 1, unit: lb, note: "cremini, halved" }
   - { item: xanthan gum, qty: 0.25, unit: tsp, optional: true }
   - { item: parsley, qty: 2, unit: tbsp, note: chopped }
 ---

@@ -1,14 +1,12 @@
 // Pure helpers for turning list rows into the grouped, merged grocery list.
-
-const MASS = { g: 1, kg: 1000 };
-const VOLUME = { ml: 1, l: 1000 };
+import { toUS, measureOf, fromOunces, fromTeaspoons } from "./units.js";
 
 const PLURALS = {
   clove: "cloves", stalk: "stalks", bunch: "bunches", sprig: "sprigs", can: "cans",
   jar: "jars", package: "packages", slice: "slices", pinch: "pinches", cup: "cups",
 };
 const UNIT_LABEL = { fl_oz: "fl oz" };
-const FRACTIONS = [[0.25, "¼"], [1 / 3, "⅓"], [0.5, "½"], [2 / 3, "⅔"], [0.75, "¾"]];
+const FRACTIONS = [[0.125, "⅛"], [0.25, "¼"], [1 / 3, "⅓"], [0.5, "½"], [2 / 3, "⅔"], [0.75, "¾"]];
 
 export function formatNumber(n) {
   if (n == null) return "";
@@ -21,33 +19,26 @@ export function formatNumber(n) {
   return String(Math.round(n * 100) / 100);
 }
 
+// Display one measurement in US units ("3 lb", "1¾ cups", "5 cloves", "2").
 export function formatQty(qty, unit) {
   if (qty == null) return "";
+  ({ qty, unit } = toUS(qty, unit));
   if (!unit || unit === "whole") return formatNumber(qty);
-  if (unit in MASS) { qty *= MASS[unit]; return qty >= 1000 ? `${formatNumber(round(qty / 1000))} kg` : `${formatNumber(round(qty))} g`; }
-  if (unit in VOLUME) { qty *= VOLUME[unit]; return qty >= 1000 ? `${formatNumber(round(qty / 1000))} l` : `${formatNumber(round(qty))} ml`; }
   const label = qty > 1 && PLURALS[unit] ? PLURALS[unit] : UNIT_LABEL[unit] ?? unit;
   return `${formatNumber(qty)} ${label}`;
 }
 
-const round = (n) => Math.round(n * 100) / 100;
-
-// Sum quantities, converting within metric mass and volume; other units stay separate.
+// Sum quantities: weights merge (oz/lb), volumes merge (tsp/tbsp/cup), counts merge by unit.
+// Metric rows are converted to US first.
 export function sumQuantities(rows) {
-  const buckets = new Map(); // key -> { qty, unit }
+  const buckets = new Map(); // family -> total in base unit
   for (const r of rows) {
     if (r.qty == null) continue;
-    const qty = Number(r.qty);
-    let key = r.unit ?? "whole";
-    let base = qty;
-    let unit = key;
-    if (key in MASS) { base = qty * MASS[key]; key = "mass"; unit = "g"; }
-    else if (key in VOLUME) { base = qty * VOLUME[key]; key = "volume"; unit = "ml"; }
-    const b = buckets.get(key) ?? { qty: 0, unit };
-    b.qty += base;
-    buckets.set(key, b);
+    const { family, base } = measureOf(Number(r.qty), r.unit);
+    buckets.set(family, (buckets.get(family) ?? 0) + base);
   }
-  return [...buckets.values()];
+  return [...buckets.entries()].map(([family, total]) =>
+    family === "mass" ? fromOunces(total) : family === "volume" ? fromTeaspoons(total) : { qty: total, unit: family });
 }
 
 export function quantityText(rows) {
@@ -113,7 +104,7 @@ export function parseEntry(text) {
   if (!m) return { name: t, qty: null, unit: null };
   const qty = parseAmount(m[1]);
   const unit = UNIT_WORDS[m[2].toLowerCase()];
-  if (unit && m[3]) return { name: m[3], qty, unit };
+  if (unit && m[3]) return { name: m[3], ...toUS(qty, unit) };
   return { name: [m[2], m[3]].filter(Boolean).join(" "), qty, unit: "whole" };
 }
 

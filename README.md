@@ -23,6 +23,7 @@ related: [instant-pot-keto-pork-stew]  # other recipe file names, no .md
 ingredients:
   - { item: yellow onion, qty: 1, unit: whole, note: "medium, diced" }
   - { item: xanthan gum, qty: 0.25, unit: tsp, optional: true }
+  - { item: mushrooms, qty: 1, unit: lb, note: "cremini, halved" }   # variety goes in the note
   - { item: fish sauce, qty: 1, unit: tbsp, section: international }  # one-off section override
 ---
 
@@ -32,7 +33,7 @@ Free-form intro, then `## Method` and `## Notes` in markdown.
 **Ingredient rules.** These keep the grocery list combining cleanly across recipes:
 
 - `item` is the shopping name, lowercase and singular in meaning ("yellow onion", not "1 medium onion, diced"). Use the **same name in every recipe**, because that's how the list combines items. Prep details go in `note`.
-- `unit` must be one of: `g kg ml l tsp tbsp cup oz lb fl_oz whole clove stalk bunch sprig can jar package slice pinch`. Use `whole` for counted things (1 onion, 2 bay leaves).
+- Measurements are US kitchen units: `cup tbsp tsp` for volume, `lb` (or `oz` for small amounts) for weight, and counts (`whole clove stalk bunch sprig can jar package slice pinch`) for things bought by the piece. Use `whole` for counted things (1 onion, 2 bay leaves). Metric (`g kg ml l`) is accepted and converted to US units automatically.
 - `qty` is a number (`0.25`, not `1/4`). Leave it out for "to taste".
 - Alternatives ("or olive oil") go in `note`. The list shows only the main item.
 
