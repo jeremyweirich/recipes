@@ -4,7 +4,7 @@ summary: The braised pork stew in about an hour and a quarter, under pressure.
 servings: 6
 time_minutes: 75
 tags: [keto, pork, stew, instant-pot, weeknight]
-photo:
+photo: photos/instant-pot-keto-pork-stew.jpg
 related: [keto-braised-pork-stew]
 ingredients:
   - { item: pork shoulder, qty: 3, unit: lb, note: "boneless; fat cap and thick seams trimmed; 1½-inch chunks" }
