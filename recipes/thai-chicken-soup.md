@@ -4,8 +4,7 @@ summary: Chicken, peppers and mushrooms in a coconut-ginger broth with lime and 
 servings: 4
 time_minutes: 45
 tags: [chicken, soup, thai, weeknight, keto]
-photo:
-photo_prompt: "A bowl of creamy pale coconut milk chicken soup with sliced red bell peppers, mushrooms, carrot coins, cilantro leaves and a lime wedge"
+photo: photos/thai-chicken-soup.jpg
 ingredients:
   - { item: chicken breasts, qty: 1, unit: lb, note: cubed }
   - { item: coconut milk, qty: 1, unit: can }
