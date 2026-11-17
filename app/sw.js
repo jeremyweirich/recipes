@@ -35,7 +35,13 @@ self.addEventListener("fetch", (e) => {
   }
   if (url.origin !== self.location.origin) return;
 
-  if (url.pathname.endsWith("/recipes.json") || url.pathname.includes("/recipes/photos/")) {
+  if (url.pathname.endsWith("/recipes.json")) {
+    // Revalidate with the server every time: GitHub Pages lets browsers reuse a copy for
+    // 10 minutes, which hid newly deployed recipes.
+    e.respondWith(networkFirst(req, { cache: "no-cache" }));
+    return;
+  }
+  if (url.pathname.includes("/recipes/photos/")) {
     e.respondWith(networkFirst(req));
     return;
   }
@@ -46,10 +52,10 @@ self.addEventListener("fetch", (e) => {
   e.respondWith(caches.match(req).then((r) => r || fetch(req)));
 });
 
-async function networkFirst(req) {
+async function networkFirst(req, init) {
   const cache = await caches.open(RUNTIME);
   try {
-    const res = await fetch(req);
+    const res = await (init ? fetch(req.url, init) : fetch(req));
     if (res.ok) cache.put(req, res.clone());
     return res;
   } catch {

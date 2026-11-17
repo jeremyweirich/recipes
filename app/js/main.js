@@ -15,7 +15,7 @@ if ("serviceWorker" in navigator && !window.__FAKE_SUPABASE__) {
 
 await new Promise((r) => (window.supabase || window.__FAKE_SUPABASE__ ? r() : addEventListener("DOMContentLoaded", r)));
 const client = window.__FAKE_SUPABASE__ ?? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const { sections: sectionData, recipes } = await fetch("recipes.json").then((r) => r.json());
+const { sections: sectionData, recipes } = await fetch("recipes.json", { cache: "no-cache" }).then((r) => r.json());
 const recipeBySlug = Object.fromEntries(recipes.map((r) => [r.slug, r]));
 const titles = Object.fromEntries(recipes.map((r) => [r.slug, r.title]));
 const sectionName = Object.fromEntries(sectionData.sections.map((s) => [s.id, s.name]));
