@@ -132,7 +132,9 @@
     "turnips": "produce",
     "worcestershire sauce": "condiments",
     "xanthan gum": "baking",
-    "yellow onion": "produce"
+    "yellow onion": "produce",
+    "ground pork": "meat",
+    "crushed tomatoes": "canned"
   },
   "staples": [
     "avocado oil",
