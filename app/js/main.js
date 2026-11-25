@@ -18,6 +18,14 @@ const client = window.__FAKE_SUPABASE__ ?? window.supabase.createClient(SUPABASE
 const { sections: sectionData, recipes } = await fetch("recipes.json", { cache: "no-cache" }).then((r) => r.json());
 const recipeBySlug = Object.fromEntries(recipes.map((r) => [r.slug, r]));
 const titles = Object.fromEntries(recipes.map((r) => [r.slug, r.title]));
+const meals = recipes.filter((r) => (r.kind ?? "meal") === "meal");
+const EXTRA_KINDS = [
+  { kind: "side", name: "Sides", one: "side" },
+  { kind: "dessert", name: "Desserts", one: "dessert" },
+  { kind: "bundle", name: "Grocery bundles", one: "bundle" },
+];
+const kindLabel = Object.fromEntries(EXTRA_KINDS.map((k) => [k.kind, k.one]));
+const isExtra = (r) => (r?.kind ?? "meal") !== "meal";
 const sectionName = Object.fromEntries(sectionData.sections.map((s) => [s.id, s.name]));
 
 let store = null;
@@ -79,6 +87,7 @@ function render(next, status) {
   renderStatus(status);
   renderDeck();
   renderWeek();
+  renderExtras();
   renderList();
 }
 
@@ -95,7 +104,7 @@ const overrides = () => Object.fromEntries(state.section_overrides.map((o) => [o
 
 function candidates() {
   const picked = pickedSlugs();
-  return recipes.filter((r) => !picked.has(r.slug) && !skipped.has(r.slug));
+  return meals.filter((r) => !picked.has(r.slug) && !skipped.has(r.slug));
 }
 
 function formatTime(min) {
@@ -133,7 +142,7 @@ function renderDeck() {
     const anySkipped = skipped.size > 0;
     deck.innerHTML = `
       <div class="deck-empty">
-        <p class="deck-empty-title">${recipes.length ? "You've been through every recipe." : "No recipes yet."}</p>
+        <p class="deck-empty-title">${meals.length ? "You've been through every recipe." : "No recipes yet."}</p>
         <p>${anySkipped ? "Go back through the ones you skipped, or head to the list." : "Add recipe files to the repo and they'll show up here."}</p>
         ${anySkipped ? `<button class="primary" id="reset-skipped">Show skipped recipes</button>` : ""}
       </div>`;
@@ -187,19 +196,23 @@ function pick(recipe) {
     note: ing.note,
     pick_id: pickId,
     recipe_slug: recipe.slug,
-    is_staple: ing.staple || ing.optional,
+    // A bundle is a list of things you meant to buy, so pantry staples go straight on the list.
+    is_staple: recipe.kind === "bundle" ? ing.optional : ing.staple || ing.optional,
     checked: false,
   })));
 }
 
 function renderWeek() {
-  const picks = [...state.picks].sort((a, b) => String(a.created_at ?? "").localeCompare(String(b.created_at ?? "")));
+  // Meals first, then extras, each in the order they were added.
+  const picks = [...state.picks].sort((a, b) =>
+    Number(isExtra(recipeBySlug[a.recipe_slug])) - Number(isExtra(recipeBySlug[b.recipe_slug])) ||
+    String(a.created_at ?? "").localeCompare(String(b.created_at ?? "")));
   $("week-empty").hidden = picks.length > 0;
   $("week-list").innerHTML = picks.map((p) => {
     const r = recipeBySlug[p.recipe_slug];
     const title = r?.title ?? p.recipe_slug;
     return `<li>
-      <button class="week-title" data-open="${esc(p.recipe_slug)}">${esc(title)}</button>
+      <button class="week-title" data-open="${esc(p.recipe_slug)}">${esc(title)}${isExtra(r) ? ` <span class="week-kind">${esc(kindLabel[r.kind] ?? r.kind)}</span>` : ""}</button>
       <button class="icon-btn" data-unpick="${esc(p.id)}" aria-label="Remove ${esc(title)} from this week">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
@@ -217,22 +230,75 @@ $("week-list").addEventListener("click", (e) => {
   }
 });
 
+// ---------- extras: sides, desserts, grocery bundles ----------
+
+function extraLine(r) {
+  if (r.kind === "bundle") {
+    const names = r.ingredients.map((i) => i.item);
+    return `${names.length} ${names.length === 1 ? "item" : "items"}: ${names.join(", ")}`;
+  }
+  const time = formatTime(r.time_minutes);
+  return r.summary || [r.servings && `Serves ${r.servings}`, time].filter(Boolean).join(", ");
+}
+
+function renderExtras() {
+  const picked = new Map(state.picks.map((p) => [p.recipe_slug, p.id]));
+  $("extras").innerHTML = EXTRA_KINDS.map(({ kind, name }) => {
+    const items = recipes.filter((r) => r.kind === kind);
+    return `
+      <section class="extras-group">
+        <h2>${esc(name)}</h2>
+        ${items.length ? `<ul class="extras-list">${items.map((r) => {
+          const on = picked.has(r.slug);
+          return `<li class="extra${on ? " added" : ""}">
+            <button class="extra-open" data-open="${esc(r.slug)}">
+              ${r.photo ? `<span class="extra-photo" style="background-image:url('${esc(r.photo)}')"></span>` : ""}
+              <span class="extra-text">
+                <span class="extra-title">${esc(r.title)}</span>
+                <span class="extra-line">${esc(extraLine(r))}</span>
+              </span>
+            </button>
+            <button class="extra-add" data-toggle-extra="${esc(r.slug)}" aria-pressed="${on}"
+              aria-label="${on ? `Remove ${esc(r.title)} from the list` : `Add ${esc(r.title)} to the list`}">
+              ${on ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>Added` : "Add"}
+            </button>
+          </li>`;
+        }).join("")}</ul>` : `<p class="extras-empty">No ${esc(name.toLowerCase())} yet.</p>`}
+      </section>`;
+  }).join("");
+}
+
+$("extras").addEventListener("click", (e) => {
+  const open = e.target.closest("[data-open]");
+  const toggle = e.target.closest("[data-toggle-extra]");
+  if (open && recipeBySlug[open.dataset.open]) openRecipe(recipeBySlug[open.dataset.open]);
+  if (toggle) {
+    const r = recipeBySlug[toggle.dataset.toggleExtra];
+    const existing = state.picks.find((p) => p.recipe_slug === r?.slug);
+    if (existing) store.remove("picks", [existing.id]);
+    else if (r) pick(r);
+  }
+});
+
 // ---------- recipe sheet ----------
 
 function openRecipe(r) {
   const time = formatTime(r.time_minutes);
   const picked = pickedSlugs().has(r.slug);
+  const bundle = r.kind === "bundle";
+  const facts = [r.servings && `Serves ${r.servings}`, time].filter(Boolean).join(", ");
   $("recipe-content").innerHTML = `
     ${r.photo ? `<img class="recipe-photo" src="${esc(r.photo)}" alt="">` : ""}
     ${r.photo_generated ? `<p class="photo-note">AI-generated picture. Add your own photo to replace it.</p>` : ""}
     <h2 id="recipe-title" class="recipe-title">${esc(r.title)}</h2>
-    <p class="recipe-facts">Serves ${esc(r.servings)}${time ? `, ${esc(time)}` : ""}</p>
-    <h3>Ingredients</h3>
+    ${facts ? `<p class="recipe-facts">${esc(facts)}</p>` : ""}
+    ${bundle && r.summary ? `<p class="recipe-facts">${esc(r.summary)}</p>` : ""}
+    <h3>${bundle ? "Items" : "Ingredients"}</h3>
     <ul class="ingredients">
       ${r.ingredients.map((i) => `<li><span class="ing-qty">${esc(fmt(i))}</span> ${esc(i.item)}${i.note ? `<span class="ing-note">, ${esc(i.note)}</span>` : ""}${i.optional ? ' <span class="ing-note">(optional)</span>' : ""}</li>`).join("")}
     </ul>
     <div class="recipe-body">${renderMarkdown(r.body)}</div>
-    ${picked ? "" : `<button class="primary wide" id="recipe-pick">Add to week</button>`}`;
+    ${picked ? "" : `<button class="primary wide" id="recipe-pick">${isExtra(r) ? "Add to list" : "Add to week"}</button>`}`;
   $("recipe-pick")?.addEventListener("click", () => { pick(r); $("recipe-sheet").close(); });
   $("recipe-sheet").showModal();
   $("recipe-sheet").querySelector(".sheet-body").scrollTop = 0;

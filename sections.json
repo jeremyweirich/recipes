@@ -134,7 +134,9 @@
     "xanthan gum": "baking",
     "yellow onion": "produce",
     "ground pork": "meat",
-    "crushed tomatoes": "canned"
+    "crushed tomatoes": "canned",
+    "cream cheese": "dairy",
+    "chives": "produce"
   },
   "staples": [
     "avocado oil",

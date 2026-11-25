@@ -48,6 +48,11 @@
         </section>
       </section>
 
+      <section id="extras-view" class="view" aria-labelledby="tab-extras" hidden>
+        <p class="extras-intro">Sides, desserts and things you buy together. Add one to put its ingredients on the list.</p>
+        <div id="extras"></div>
+      </section>
+
       <section id="list-view" class="view" aria-labelledby="tab-list" hidden>
         <form id="add-form" class="add-form" autocomplete="off">
           <label class="visually-hidden" for="add-input">Add an item</label>
@@ -65,6 +70,10 @@
       <button role="tab" id="tab-plan" aria-selected="true" aria-controls="plan-view" data-view="plan">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="14" height="13" rx="1.5"/><path d="M7 3h13v13"/></svg>
         Plan
+      </button>
+      <button role="tab" id="tab-extras" aria-selected="false" aria-controls="extras-view" data-view="extras">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+        Extras
       </button>
       <button role="tab" id="tab-list" aria-selected="false" aria-controls="list-view" data-view="list">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>

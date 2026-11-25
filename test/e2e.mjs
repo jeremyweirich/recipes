@@ -17,10 +17,22 @@ const browser = await chromium.launch({ executablePath: process.env.CHROME ?? "/
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true });
 await ctx.route(/fonts\.(googleapis|gstatic)\.com/, (route) => route.abort());
 await ctx.addInitScript({ content: readFileSync(new URL("./fake-supabase.js", import.meta.url), "utf8") });
-// Pin the test to the two pork stews so adding recipes doesn't change what it expects.
+// Pin the test to the two pork stews (meals), the cauliflower mash (a side) and a made-up
+// bundle, so adding recipes doesn't change what it expects.
 const built = JSON.parse(readFileSync(new URL("../dist/recipes.json", import.meta.url), "utf8"));
-const fixture = { ...built, recipes: built.recipes.filter((r) => r.slug.includes("pork-stew")) };
-assert.equal(fixture.recipes.length, 2, "test fixture needs both pork stew recipes");
+const bundle = {
+  slug: "test-bundle", kind: "bundle", title: "Breakfast basics", summary: "", servings: null, time_minutes: null,
+  tags: [], photo: null, photo_generated: false, related: [], body: "",
+  ingredients: [
+    { item: "butter", qty: 1, unit: "lb", note: null, optional: false, section: "dairy", staple: true },
+    { item: "lime", qty: 3, unit: "whole", note: null, optional: false, section: "produce", staple: false },
+  ],
+};
+const fixture = {
+  ...built,
+  recipes: [...built.recipes.filter((r) => r.slug.includes("pork-stew") || r.slug === "keto-cauliflower-mash"), bundle],
+};
+assert.equal(fixture.recipes.length, 4, "test fixture needs both pork stews and the cauliflower mash");
 await ctx.route(/recipes\.json$/, (route) => route.fulfill({ contentType: "application/json", body: JSON.stringify(fixture) }));
 const page = await ctx.newPage();
 const errors = [];
@@ -138,6 +150,36 @@ try {
   assert.equal(after.picks.length, 1);
   assert.equal(after.list_items.filter((r) => r.pick_id).length, 0, "orphan rows from the rejected pick were dropped");
   assert.equal(await page.locator(".week-list li").count(), 1);
+
+  step("extras are browsed in their own tab and add their ingredients to the list");
+  await page.click("#tab-extras");
+  await page.waitForSelector('[data-toggle-extra="keto-cauliflower-mash"]');
+  assert.deepEqual(await page.$$eval(".extras-group h2", (hs) => hs.map((h) => h.textContent)), ["Sides", "Desserts", "Grocery bundles"]);
+  await page.click('[data-toggle-extra="keto-cauliflower-mash"]');
+  await page.waitForFunction(() => window.__fake.db.list_items.filter((r) => r.recipe_slug === "keto-cauliflower-mash").length === 9);
+  await page.waitForSelector('[data-toggle-extra="keto-cauliflower-mash"][aria-pressed="true"]');
+  await page.click('[data-toggle-extra="test-bundle"]');
+  await page.waitForFunction(() => window.__fake.db.list_items.some((r) => r.recipe_slug === "test-bundle" && r.name === "butter"));
+  const butter = (await db()).list_items.find((r) => r.recipe_slug === "test-bundle" && r.name === "butter");
+  assert.equal(butter.is_staple, false, "bundle items go straight on the list, even staples");
+  await page.screenshot({ path: `${shots}7-extras.png`, fullPage: true });
+
+  step("an extra opens as a recipe and shows in This week");
+  await page.click('.extra-open[data-open="keto-cauliflower-mash"]');
+  await page.waitForSelector("#recipe-sheet[open] .ingredients li");
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: `${shots}8-extra-recipe.png` });
+  await page.click("#recipe-sheet [data-close]");
+  await page.click("#tab-plan");
+  assert.equal(await page.locator(".week-list li").count(), 3);
+  assert.equal(await page.textContent(".week-list li:nth-child(2) .week-kind"), "side");
+  await page.screenshot({ path: `${shots}9-week-with-extras.png`, fullPage: true });
+
+  step("tapping Added again removes the extra and its ingredients");
+  await page.click("#tab-extras");
+  await page.click('[data-toggle-extra="keto-cauliflower-mash"]');
+  await page.waitForFunction(() => !window.__fake.db.list_items.some((r) => r.recipe_slug === "keto-cauliflower-mash"));
+  await page.waitForSelector('[data-toggle-extra="keto-cauliflower-mash"][aria-pressed="false"]');
 
   assert.deepEqual(errors, [], "no console errors");
   console.log("E2E OK");

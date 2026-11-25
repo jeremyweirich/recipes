@@ -14,8 +14,9 @@ Our recipe collection, and the source for a shared meal-planning and grocery app
 ```yaml
 ---
 title: Keto Braised Pork Stew          # required
+kind: meal                             # meal (default), side, dessert or bundle
 summary: One line for the recipe card.
-servings: 6                            # required, whole number
+servings: 6                            # required (except bundles), whole number
 time_minutes: 180
 tags: [keto, pork, stew, oven]
 photo: photos/keto-braised-pork-stew.jpg
@@ -30,6 +31,8 @@ ingredients:
 
 Free-form intro, then `## Method` and `## Notes` in markdown.
 ```
+
+**Kinds.** Meals are the swipe cards on the Plan tab. Everything else (`side`, `dessert`, `bundle`) shows on the Extras tab instead. A `bundle` is a set of groceries you buy together: just a title and `ingredients` (no servings or method needed, and no generated picture). Staples in a bundle go straight on the list.
 
 **Ingredient rules.** These keep the grocery list combining cleanly across recipes:
 
@@ -49,8 +52,9 @@ Free-form intro, then `## Method` and `## Notes` in markdown.
 A phone web app in `app/`, deployed to GitHub Pages on every push to `main`. Add it to your home screen from Safari (Share → Add to Home Screen) or Chrome (menu → Add to Home screen).
 
 - **Plan:** swipe right to add a recipe to this week, left to skip. Tap a card to read the recipe.
+- **Extras:** sides, desserts and grocery bundles. Tap Add to put one's ingredients on the list; tap again to take them off. They also show under This week.
 - **List:** everything from this week's recipes, merged and grouped by store section, plus anything you add by hand. Changes show up on both phones right away. If you lose signal in the store, changes are saved on the phone and sent when you're back online.
-- **Menu → Start a new week:** clears this week's recipes and their ingredients, plus checked-off items.
+- **Menu → Start a new week:** clears this week's recipes and extras and their ingredients, plus checked-off items.
 
 ### One-time setup
 

@@ -15,6 +15,10 @@ export const UNITS = [
   "whole", "clove", "stalk", "bunch", "sprig", "can", "jar", "package", "slice", "pinch",
 ];
 
+// Meals are swipe-deck cards; the other kinds are "extras" browsed in their own list.
+// Bundles are groups of things you buy together: no servings or method needed.
+export const KINDS = ["meal", "side", "dessert", "bundle"];
+
 const sections = JSON.parse(readFileSync(join(root, "sections.json"), "utf8"));
 const sectionIds = new Set(sections.sections.map((s) => s.id));
 const errors = [];
@@ -41,9 +45,12 @@ for (const file of files) {
   let meta;
   try { meta = yaml.load(m[1]); } catch (e) { errors.push(`${where}: bad YAML: ${e.message}`); continue; }
 
+  const kind = meta.kind ?? "meal";
+  if (!KINDS.includes(kind)) errors.push(`${where}: unknown kind "${kind}" (allowed: ${KINDS.join(", ")})`);
   if (!/^[a-z0-9-]+$/.test(slug)) errors.push(`${where}: file name should be lowercase-with-dashes`);
   if (!meta.title) errors.push(`${where}: title is required`);
-  if (!Number.isInteger(meta.servings) || meta.servings < 1) errors.push(`${where}: servings must be a positive whole number`);
+  const servingsOk = Number.isInteger(meta.servings) && meta.servings >= 1;
+  if (kind === "bundle" ? meta.servings != null && !servingsOk : !servingsOk) errors.push(`${where}: servings must be a positive whole number`);
   if (meta.time_minutes != null && !Number.isInteger(meta.time_minutes)) errors.push(`${where}: time_minutes must be a whole number`);
   if (meta.tags && !Array.isArray(meta.tags)) errors.push(`${where}: tags must be a list`);
   if (meta.photo && !existsSync(join(recipesDir, meta.photo))) errors.push(`${where}: photo "${meta.photo}" not found`);
@@ -77,9 +84,10 @@ for (const file of files) {
 
   recipes.push({
     slug,
+    kind,
     title: meta.title,
     summary: meta.summary ?? "",
-    servings: meta.servings,
+    servings: meta.servings ?? null,
     time_minutes: meta.time_minutes ?? null,
     tags: meta.tags ?? [],
     photo: meta.photo ? `recipes/${meta.photo}` : generated(slug),

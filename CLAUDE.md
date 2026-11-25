@@ -23,7 +23,8 @@ Shared meal-planning + grocery web app for Jeremy (Android) and his wife (iPhone
 - Keep MVP small: swipe, shared list by section, manual add, check-off and remove. Later: servings scaling, "both swiped yes" mode, photo upload.
 
 ## App layout
-- `app/index.html`, `app/app.css`: one page, two tabs (Plan, List), `<dialog>` sheets.
+- `app/index.html`, `app/app.css`: one page, three tabs (Plan, Extras, List), `<dialog>` sheets.
+- Recipe `kind`: `meal` (default, swipe deck) or `side`/`dessert`/`bundle` (Extras tab, add/remove toggle). Extras reuse `picks` (one row per slug), so no schema change; bundles need no servings and skip photo generation.
 - `app/js/store.js`: Supabase data + localStorage outbox (optimistic; ops replayed on fresh server state; 4xx ops dropped). Realtime triggers a full refetch.
 - `app/js/combine.js`: pure merging/formatting/section-guessing; `app/js/units.js`: US unit conversion (both unit tested in `test/combine.test.mjs`).
 - `scripts/generate-photos.mjs`: Pollinations placeholders, run in the deploy workflow; regenerates when a recipe's `photo_prompt` changes (tracked in `recipes/photos/generated/prompts.json`).

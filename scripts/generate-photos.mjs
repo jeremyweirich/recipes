@@ -46,7 +46,7 @@ for (const file of readdirSync(recipesDir).filter((f) => f.endsWith(".md")).sort
   const m = readFileSync(join(recipesDir, file), "utf8").match(/^---\n([\s\S]*?)\n---/);
   if (!m) continue;
   const meta = yaml.load(m[1]);
-  if (meta.photo) continue;
+  if (meta.photo || meta.kind === "bundle") continue; // bundles are shopping lists, not dishes
   const prompt = promptFor(meta);
   const exists = existsSync(join(outDir, `${slug}.jpg`));
   // Make a picture if there's none, or if the recipe's photo_prompt is new or changed.
