@@ -136,7 +136,21 @@
     "ground pork": "meat",
     "crushed tomatoes": "canned",
     "cream cheese": "dairy",
-    "chives": "produce"
+    "chives": "produce",
+    "sandwich bread": "bakery",
+    "mayo": "condiments",
+    "mustard": "condiments",
+    "deli meat": "deli",
+    "deli cheese": "deli",
+    "salad greens": "produce",
+    "pickles": "condiments",
+    "dried apricots": "snacks",
+    "sugar": "baking",
+    "cornstarch": "baking",
+    "almond extract": "baking",
+    "pie crust": "dairy",
+    "eggs": "dairy",
+    "turbinado sugar": "baking"
   },
   "staples": [
     "avocado oil",
@@ -156,6 +170,8 @@
     "kosher salt",
     "smoked paprika",
     "worcestershire sauce",
-    "xanthan gum"
+    "xanthan gum",
+    "sugar",
+    "cornstarch"
   ]
 }
